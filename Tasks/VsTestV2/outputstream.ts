@@ -1,14 +1,17 @@
 import * as stream from 'stream';
 import * as os from 'os';
+import * as ci from './cieventlogger';
 import * as tl from 'azure-pipelines-task-lib/task';
 
 export class StringErrorWritable extends stream.Writable {
     private value: string = '';
     private isErrorStream: boolean;
+    private isBlockingCommands: boolean;
 
-    constructor(isErrorStream: boolean, options: any) {
+    constructor(isErrorStream: boolean, isBlockingCommands: boolean, options: any) {
         super(options);
         this.isErrorStream = isErrorStream;
+        this.isBlockingCommands = isBlockingCommands;
     }
 
     _write(data: any, encoding: string, callback: Function): void {
@@ -21,12 +24,16 @@ export class StringErrorWritable extends stream.Writable {
 
             var command = this.getCommand(line);
             if (command != null) {
-                // TODO: Logs telemetry on what was happening.
-                // console.log("##vso[telemetry.publish area=TaskHub;feature=FOOFEATURE]<ANY VALID JSON CONTENT HERE>")
+                const taskProps: { [key: string]: string; } = { command: command};
+                ci.publishEvent(taskProps);
 
-                if (true/* TODO: Is Feature Flag Enabled */) {
-                    // TODO: Remove entire line instead of just replacing the key work.
-                    line = line.replace('##vso','');
+                if (true /* this.isBlockingCommands */) {
+                    const allowedCommands = ['task.logissue', 'task.setvariable'];
+                    if (allowedCommands.indexOf(command.toLowerCase()) < 0) {
+                        // TODO: Remove entire line instead of just replacing the key work.
+                        line = line.replace('##vso','#vso');
+                        // line = '';
+                    }
                 }
             }
 
