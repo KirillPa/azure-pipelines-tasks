@@ -27,12 +27,10 @@ export class StringErrorWritable extends stream.Writable {
                 const taskProps: { [key: string]: string; } = { command: command};
                 ci.publishEvent(taskProps);
 
-                if (true /* TODO: this.isBlockingCommands */) {
+                if (this.isBlockingCommands) {
                     const allowedCommands = ['task.logissue', 'task.setvariable'];
                     if (allowedCommands.indexOf(command.toLowerCase()) < 0) {
-                        // TODO: Remove entire line instead of just replacing the key work.
                         line = line.replace('##vso','#vso');
-                        // line = '';
                     }
                 }
             }
