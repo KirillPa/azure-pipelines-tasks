@@ -28,7 +28,10 @@ export class StringErrorWritable extends stream.Writable {
                 ci.publishEvent(taskProps);
 
                 if (this.isBlockingCommands) {
-                    const allowedCommands = ['task.logissue', 'task.setvariable'];
+
+                    const allowedCommands = ['task.logdetail', 'task.logissue', 'task.complete', 'task.setprogress', 
+                        'task.setsecret', 'task.setvariable', 'task.debug', 'task.settaskvariable', 'task.prependpath'];
+
                     if (allowedCommands.indexOf(command.toLowerCase()) < 0) {
                         line = line.replace('##vso','#vso');
                     }
@@ -71,6 +74,6 @@ export class StringErrorWritable extends stream.Writable {
             endIndex = endIndex2;
         }
 
-        return line.substring(startIndex, endIndex - startIndex);
+        return line.substring(startIndex, endIndex);
     }
 }
