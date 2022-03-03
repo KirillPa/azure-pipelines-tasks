@@ -56,18 +56,19 @@ export class StringErrorWritable extends stream.Writable {
     }
 
     getCommand(line: string): string {
-        let startIndex = line.indexOf('##vso[');
-        if (startIndex < 0) {
+        let startIndex = line.indexOf('##vso[') + 6;
+        if (startIndex < 6) {
             return null;
         }
 
-        let endIndex = line.indexOf(' ', startIndex);
-        if (endIndex < 0) {
-            endIndex = line.indexOf(']', startIndex);
-        }
-
+        let endIndex = line.indexOf(']', startIndex);
         if (endIndex < 0) {
             return null;
+        }
+
+        let endIndex2 = line.indexOf(' ', startIndex);
+        if (endIndex2 < endIndex && endIndex2 > startIndex) {
+            endIndex = endIndex2;
         }
 
         return line.substring(startIndex, endIndex - startIndex);
