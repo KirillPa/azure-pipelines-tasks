@@ -78,7 +78,7 @@ export class NonDistributedTest {
         }
 
         const isBlockingCommands = await isFeatureFlagEnabled(tl.getVariable('System.TeamFoundationCollectionUri'),
-            'TestExecution.EnableBlockingCommands', tl.getEndpointAuthorization('SystemVssConnection', true).parameters.AccessToken);
+            'TestExecution.EnableBlockedCommandInRestrictedMode', tl.getEndpointAuthorization('SystemVssConnection', true).parameters.AccessToken);
 
         const execOptions: tr.IExecOptions = <any>{
             IgnoreTestFailures: this.inputDataContract.TestReportingSettings.ExecutionStatusSettings.IgnoreTestFailures,

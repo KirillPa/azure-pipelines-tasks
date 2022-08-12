@@ -22,19 +22,18 @@ export class StringErrorWritable extends stream.Writable {
         while (n > -1) {
             var line = errorString.substring(0, n);
 
-            var command = this.getCommand(line);
-            if (command != null) {
-                const taskProps: { [key: string]: string; } = { command: command};
-                ci.publishEvent(taskProps);
+            if (this.isBlockingCommands) {
+                var command = this.getCommand(line);
+                if (command != null) {
+                    const taskProps: { [key: string]: string; } = { command: command};
+                    ci.publishEvent(taskProps);                    
 
-                if (this.isBlockingCommands) {
+                        const allowedCommands = ['task.logdetail', 'task.logissue', 'task.complete', 'task.setprogress', 
+                            'task.setsecret', 'task.setvariable', 'task.debug', 'task.settaskvariable', 'task.prependpath'];
 
-                    const allowedCommands = ['task.logdetail', 'task.logissue', 'task.complete', 'task.setprogress', 
-                        'task.setsecret', 'task.setvariable', 'task.debug', 'task.settaskvariable', 'task.prependpath'];
-
-                    if (allowedCommands.indexOf(command.toLowerCase()) < 0) {
-                        line = line.replace('##vso','#vso');
-                    }
+                        if (allowedCommands.indexOf(command.toLowerCase()) < 0) {
+                            line = line.replace('##vso','#vso');
+                        }                    
                 }
             }
 
@@ -44,7 +43,7 @@ export class StringErrorWritable extends stream.Writable {
             else {
                 console.log(line);
             }
-
+            
             // the rest of the string ...
             errorString = errorString.substring(n + os.EOL.length);
             n = errorString.indexOf(os.EOL);

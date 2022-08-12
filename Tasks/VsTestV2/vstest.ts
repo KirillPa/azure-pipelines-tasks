@@ -275,7 +275,7 @@ async function executeVstest(parallelRunSettingsFile: string, vsVersion: number,
     }
 
     const isBlockingCommands = await isFeatureFlagEnabled(tl.getVariable('System.TeamFoundationCollectionUri'),
-        'TestExecution.EnableBlockingCommands', tl.getEndpointAuthorization('SystemVssConnection', true).parameters.AccessToken);
+        'TestExecution.EnableBlockedCommandInRestrictedMode', tl.getEndpointAuthorization('SystemVssConnection', true).parameters.AccessToken);
 
     const execOptions: tr.IExecOptions = <any>{
         ignoreReturnCode: ignoreTestFailures,
