@@ -13,6 +13,7 @@ import { ServerTypes, ActionOnThresholdNotMet, BackDoorVariables, AgentVariables
 const request = require('request');
 const osPlat: string = os.platform();
 
+
 tl.setResourcePath(path.join(__dirname, 'task.json'));
 
 async function execute() {
